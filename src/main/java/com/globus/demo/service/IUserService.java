@@ -5,5 +5,6 @@ import com.globus.demo.token.Token;
 
 public interface IUserService {
     Token create(User user);
-    User read(Token token);
+    Token read(User user);
+    User getUserInformation(Token token);
 }

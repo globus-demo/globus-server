@@ -1,7 +1,10 @@
 package com.globus.demo.service;
 
+import com.globus.demo.controllers.UserController;
 import com.globus.demo.model.User;
 import com.globus.demo.token.Token;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,9 +16,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class UserService implements IUserService{
 
-    private static final Map<String, User> CLIENT_REPOSITORY_MAP = new HashMap<>();
+    private static Logger log = LoggerFactory.getLogger(IUserService.class.getName());
 
-    private static final List<String> EMAILS = new ArrayList<>();
+    private static final Map<String, User> CLIENT_REPOSITORY_MAP = new HashMap<>();
 
     // Переменная для генерации ID user'а
     private static final AtomicInteger USER_ID_HOLDER = new AtomicInteger();
@@ -23,7 +26,9 @@ public class UserService implements IUserService{
     @Override
     public Token create(User user) {
         String email = user.getEmail();
-        if(EMAILS.contains(email)){
+        log.info("Create user from email: " + email);
+        if(CLIENT_REPOSITORY_MAP.containsKey(email)) {
+            log.info("Create already exist from email: " + email);
             return null;
         }
 
@@ -34,15 +39,32 @@ public class UserService implements IUserService{
         token.setToken(code);
         user.setToken(token);
 
-        CLIENT_REPOSITORY_MAP.put(code, user);
-        EMAILS.add(email);
+        CLIENT_REPOSITORY_MAP.put(email, user);
         return token;
     }
 
     @Override
-    public User read(Token token) {
-        String code = token.getToken();
+    public Token read(User user) {
+        User userFromCollection = CLIENT_REPOSITORY_MAP.get(user.getEmail());
+        if(userFromCollection != null) {
+            if (userFromCollection.getPassword().equals(user.getPassword())) {
+                return userFromCollection.getToken();
+            }
+            else {
+                log.info("Password fake!");
+                return null;
+            }
+        }
 
-        return CLIENT_REPOSITORY_MAP.get(code);
+        log.info("User not found!");
+        return null;
+    }
+
+    @Override
+    public User getUserInformation(Token token1) {
+        return CLIENT_REPOSITORY_MAP.values().stream().
+                filter(x ->x.getToken().getToken().equals(token1.getToken())).
+                findAny().
+                get();
     }
 }
