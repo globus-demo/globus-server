@@ -1,6 +1,7 @@
 package com.globus.demo.controllers;
 
 import com.globus.demo.model.User;
+import com.globus.demo.response.Response;
 import com.globus.demo.service.IUserService;
 import com.globus.demo.token.Token;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +23,21 @@ public class UserController {
     public ResponseEntity<?> create(@RequestBody User user){
         Token token = userService.create(user);
         if(token == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            String text = "User already exists";
+            Response response = new Response(false, text);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(token, HttpStatus.CREATED);
+        Response response = new Response(true, token);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/user")
-    public ResponseEntity<User> read(@RequestBody Token token){
-        System.out.println(token.getToken());
-
+    public ResponseEntity<Response> read(@RequestBody Token token){
         final User user = userService.read(token);
 
         return user != null
-                ? new ResponseEntity<>(user, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                ? new ResponseEntity<>(new Response(true, user), HttpStatus.OK)
+                : new ResponseEntity<>(new Response(false, "Not found"), HttpStatus.NOT_FOUND);
     }
 
 }

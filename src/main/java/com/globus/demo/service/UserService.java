@@ -43,8 +43,6 @@ public class UserService implements IUserService{
     public User read(Token token) {
         String code = token.getToken();
 
-        System.out.println("CODE = " + code);
-
         return CLIENT_REPOSITORY_MAP.get(code);
     }
 }
