@@ -31,7 +31,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/user")
+    @PostMapping(value = "/user")
     public ResponseEntity<Response> read(@RequestBody Token token){
         final User user = userService.read(token);
 
