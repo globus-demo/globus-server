@@ -1,8 +1,9 @@
 package com.globus.demo.service;
 
 import com.globus.demo.model.User;
+import com.globus.demo.token.Token;
 
 public interface IUserService {
-    String create(User user);
-    User read(String code);
+    Token create(User user);
+    User read(Token token);
 }

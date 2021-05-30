@@ -1,12 +1,14 @@
 package com.globus.demo.model;
 
+import com.globus.demo.token.Token;
+
 public class User {
     private Integer id;
     private String name;
     private String surname;
     private String email;
     private String password;
-    private String code;
+    private Token token;
 
     public Integer getId() {
         return id;
@@ -48,11 +50,11 @@ public class User {
         this.password = password;
     }
 
-    public String getCode() {
-        return code;
+    public Token getToken() {
+        return token;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setToken(Token token) {
+        this.token = token;
     }
 }
