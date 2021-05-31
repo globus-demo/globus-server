@@ -1,14 +1,41 @@
-package com.globus.demo.model;
+package com.globus.demo.model.entites;
 
-import com.globus.demo.token.Token;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "surname")
     private String surname;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
-    private Token token;
+
+    @JsonIgnore
+    @Column(name = "token")
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token_string) {
+        this.token = token_string;
+    }
 
     public Integer getId() {
         return id;
@@ -50,11 +77,4 @@ public class User {
         this.password = password;
     }
 
-    public Token getToken() {
-        return token;
-    }
-
-    public void setToken(Token token) {
-        this.token = token;
-    }
 }
