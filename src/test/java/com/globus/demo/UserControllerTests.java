@@ -1,12 +1,11 @@
 package com.globus.demo;
 
-import com.globus.demo.model.User;
-import com.globus.demo.token.Token;
+import com.globus.demo.model.entites.User;
+import com.globus.demo.response.token.Token;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -30,7 +29,7 @@ class UserControllerTests {
 			statusCode(201).
 			contentType(ContentType.JSON).
 			body("status", equalTo(true)).
-			body("objectToResponse.token", matchesPattern("\\d+registrationUserTestNamenull"));
+			body("objectToResponse.token", matchesPattern("registrationUserTestEmailregistrationUserTestNamenull"));
 	}
 
 	@Test
@@ -48,7 +47,7 @@ class UserControllerTests {
 				statusCode(201).
 				contentType(ContentType.JSON).
 				body("status", equalTo(true)).
-				body("objectToResponse.token", matchesPattern("\\d+doubleRegistrationUserTestNamenull"));
+				body("objectToResponse.token", matchesPattern("doubleRegistrationUserTestEmaildoubleRegistrationUserTestNamenull"));
 
 		given().
 				contentType(ContentType.JSON)
@@ -87,6 +86,37 @@ class UserControllerTests {
 				.contentType(ContentType.JSON)
 				.body("status", equalTo(true))
 				.body("objectToResponse.token", equalTo(token));
+	}
+
+	@Test
+	void userInformationTest() {
+		User user = new User();
+		user.setEmail("userInformationTestEmail");
+		user.setName("userInformationTestName");
+		user.setPassword("pass");
+		JsonPath jsonPath1 = given().
+				contentType(ContentType.JSON)
+				.body(user)
+		.when()
+				.post("/registration")
+		.jsonPath();
+
+		String tokenString = jsonPath1.getString("objectToResponse.token");
+		Integer idToken = jsonPath1.getInt("objectToResponse.id");
+		Token token = new Token(idToken, tokenString);
+
+		given()
+				.contentType(ContentType.JSON)
+				.body(token)
+		.when()
+				.post("/userinfo")
+		.then()
+				.assertThat()
+				.statusCode(200)
+				.contentType(ContentType.JSON)
+				.body("status", equalTo(true))
+				.body("objectToResponse.name", equalTo("userInformationTestName"))
+				.body("objectToResponse.email", equalTo("userInformationTestEmail"));
 	}
 
 }

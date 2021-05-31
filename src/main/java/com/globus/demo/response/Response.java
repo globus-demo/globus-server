@@ -1,7 +1,5 @@
 package com.globus.demo.response;
 
-import com.globus.demo.token.Token;
-
 public class Response {
     private boolean status;
     private String text;

@@ -1,9 +1,9 @@
 package com.globus.demo.controllers;
 
-import com.globus.demo.model.User;
+import com.globus.demo.model.entites.User;
 import com.globus.demo.response.Response;
 import com.globus.demo.service.IUserService;
-import com.globus.demo.token.Token;
+import com.globus.demo.response.token.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

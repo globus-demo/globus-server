@@ -1,54 +1,47 @@
 package com.globus.demo.service;
 
-import com.globus.demo.controllers.UserController;
-import com.globus.demo.model.User;
-import com.globus.demo.token.Token;
+import com.globus.demo.model.entites.User;
+import com.globus.demo.response.token.Token;
+import com.globus.demo.repository.IUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class UserService implements IUserService{
 
     private static Logger log = LoggerFactory.getLogger(IUserService.class.getName());
 
-    private static final Map<String, User> CLIENT_REPOSITORY_MAP = new HashMap<>();
-
-    // Переменная для генерации ID user'а
-    private static final AtomicInteger USER_ID_HOLDER = new AtomicInteger();
+    @Autowired
+    private IUserRepository userRepository;
 
     @Override
     public Token create(User user) {
         String email = user.getEmail();
         log.info("Create user from email: " + email);
-        if(CLIENT_REPOSITORY_MAP.containsKey(email)) {
-            log.info("Create already exist from email: " + email);
+
+        if (userRepository.findUserByEmail(email) != null) {
+            log.info("User exist!");
             return null;
         }
 
-        final int userId = USER_ID_HOLDER.incrementAndGet();
-        user.setId(userId);
-        String code = userId + user.getName() + user.getSurname();
-        Token token = new Token();
-        token.setToken(code);
-        user.setToken(token);
+        String code = user.getEmail() + user.getName() + user.getSurname();
+        user.setToken(code);
+        userRepository.save(user);
 
-        CLIENT_REPOSITORY_MAP.put(email, user);
+        Integer id = userRepository.findUserByEmail(email).getId();
+        Token token = new Token(id, code);
+
         return token;
     }
 
     @Override
     public Token read(User user) {
-        User userFromCollection = CLIENT_REPOSITORY_MAP.get(user.getEmail());
+        User userFromCollection = userRepository.findUserByEmail(user.getEmail());
         if(userFromCollection != null) {
             if (userFromCollection.getPassword().equals(user.getPassword())) {
-                return userFromCollection.getToken();
+                return new Token(userFromCollection.getId(), userFromCollection.getToken());
             }
             else {
                 log.info("Password fake!");
@@ -62,9 +55,10 @@ public class UserService implements IUserService{
 
     @Override
     public User getUserInformation(Token token1) {
-        return CLIENT_REPOSITORY_MAP.values().stream().
-                filter(x ->x.getToken().getToken().equals(token1.getToken())).
-                findAny().
-                get();
+        User user =  userRepository.findUserById(token1.getId());
+        if(user.getToken().equals(token1.getToken())){
+            return user;
+        }
+        return null;
     }
 }
