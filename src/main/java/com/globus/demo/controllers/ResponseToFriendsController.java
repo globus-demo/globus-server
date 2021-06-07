@@ -26,12 +26,9 @@ public class ResponseToFriendsController {
 
     @PostMapping(value = "/follow")
     public ResponseEntity<?> follow(@RequestBody ResponseToFriends response) {
-        boolean answer = responseToFriendsService.add(response.getEmailUserFrom(),
+        Response answer = responseToFriendsService.add(response.getEmailUserFrom(),
                 response.getEmailUserTo());
-        if (answer){
-            return new ResponseEntity(new Response(answer, "text"), HttpStatus.CREATED);
-        }
-        return new ResponseEntity(new Response(answer, "text"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(answer, HttpStatus.OK);
     }
 
     @PostMapping(value = "/followersMe")
@@ -54,11 +51,8 @@ public class ResponseToFriendsController {
 
     @PostMapping(value = "/deleteFollowers")
     public ResponseEntity<?> delete(@RequestBody ResponseToFriends response) {
-        boolean answer = responseToFriendsService.delete(response.getEmailUserFrom(),
+        Response answer = responseToFriendsService.delete(response.getEmailUserFrom(),
                 response.getEmailUserTo());
-        if (answer){
-            return new ResponseEntity(new Response(answer, "text"), HttpStatus.CREATED);
-        }
-        return new ResponseEntity(new Response(answer, "text"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(answer, HttpStatus.OK);
     }
 }

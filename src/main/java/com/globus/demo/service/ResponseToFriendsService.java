@@ -4,6 +4,7 @@ import com.globus.demo.model.entites.ResponseToFriends;
 import com.globus.demo.model.entites.User;
 import com.globus.demo.repository.IResponseRepository;
 import com.globus.demo.repository.IUserRepository;
+import com.globus.demo.response.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,14 @@ public class ResponseToFriendsService implements IResponseToFriendsService {
     private IUserRepository userRepository;
 
     @Override
-    public boolean add(String from, String to) {
+    public Response add(String from, String to) {
         ResponseToFriends response = responseToFriendsService.findByEmailUserFromAndEmailUserTo(from, to);
         if (response != null) {
-            return false;
+            return new Response(false, "User already followed");
+        }
+        User userTo = userRepository.findUserByEmail(to);
+        if (userTo == null) {
+            return new Response(false, "User not exist");
         }
 
         ResponseToFriends responseToFriends = new ResponseToFriends();
@@ -34,19 +39,19 @@ public class ResponseToFriendsService implements IResponseToFriendsService {
         responseToFriends.setEmailUserTo(to);
 
         responseToFriendsService.save(responseToFriends);
-        return true;
+        return new Response(true, "OK");
     }
 
     @Override
-    public boolean delete(String from, String to) {
+    public Response delete(String from, String to) {
         ResponseToFriends response = responseToFriendsService.findByEmailUserFromAndEmailUserTo(from, to);
         if (response == null) {
-            return false;
+            return new Response(false, "Followed not implement");
         }
 
         Long id = response.getId();
         responseToFriendsService.deleteById(id);
-        return true;
+        return new Response(true, "OK");
     }
 
     @Override
