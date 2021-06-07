@@ -23,8 +23,6 @@ public class PointController {
 
     private static Logger log = LoggerFactory.getLogger(UserController.class.getName());
 
-
-
     @Autowired
     private IPointService pointService;
 
