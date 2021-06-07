@@ -29,9 +29,9 @@ public class ResponseToFriendsController {
         boolean answer = responseToFriendsService.add(response.getEmailUserFrom(),
                 response.getEmailUserTo());
         if (answer){
-            return new ResponseEntity(HttpStatus.CREATED);
+            return new ResponseEntity(new Response(answer, "text"), HttpStatus.CREATED);
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(new Response(answer, "text"), HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/followersMe")
@@ -57,8 +57,8 @@ public class ResponseToFriendsController {
         boolean answer = responseToFriendsService.delete(response.getEmailUserFrom(),
                 response.getEmailUserTo());
         if (answer){
-            return new ResponseEntity(HttpStatus.CREATED);
+            return new ResponseEntity(new Response(answer, "text"), HttpStatus.CREATED);
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(new Response(answer, "text"), HttpStatus.BAD_REQUEST);
     }
 }
