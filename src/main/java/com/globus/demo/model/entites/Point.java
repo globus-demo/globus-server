@@ -6,11 +6,9 @@ import javax.persistence.*;
 @Table(name = "points")
 public class Point {
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Column(name = "userEmail")
     String userEmail;
 
     @Column(name = "latitude")

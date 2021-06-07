@@ -62,4 +62,9 @@ public class PointService implements IPointService {
         }
         return new Response(false, "this point not exist");
     }
+
+    @Override
+    public Point getPointById(Long id) {
+        return pointRepository.findById(id).get();
+    }
 }
