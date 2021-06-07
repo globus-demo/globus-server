@@ -3,6 +3,7 @@ package com.globus.demo.model.entites;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "points")
 public class Point {
     @Id
     @Column(name = "id")

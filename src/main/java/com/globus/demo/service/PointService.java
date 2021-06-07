@@ -53,11 +53,11 @@ public class PointService implements IPointService {
         points.forEach(p -> {
             if (p.getLatitude().equals(point.getLatitude()) &&
                     p.getLongitude().equals(point.getLongitude())) {
+                pointRepository.delete(p);
                 check.set(true);
             }
         });
         if (check.get()) {
-            pointRepository.delete(point);
             return new Response(true, "Delete");
         }
         return new Response(false, "this point not exist");
