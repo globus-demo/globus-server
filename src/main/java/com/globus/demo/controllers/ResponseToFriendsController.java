@@ -31,6 +31,7 @@ public class ResponseToFriendsController {
         return new ResponseEntity<>(answer, HttpStatus.OK);
     }
 
+    //Подписаны на меня
     @PostMapping(value = "/followersMe")
     public ResponseEntity<?> followersMe(@RequestBody Email email) {
         List<User> users = responseToFriendsService.toUser(email.getEmail());

@@ -7,4 +7,5 @@ public interface IUserService {
     Token create(User user);
     Token read(User user);
     User getUserInformation(Token token);
+    User readByEmail(String email);
 }

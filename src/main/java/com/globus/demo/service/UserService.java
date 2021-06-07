@@ -61,4 +61,9 @@ public class UserService implements IUserService{
         }
         return null;
     }
+
+    @Override
+    public User readByEmail(String email) {
+        return userRepository.findUserByEmail(email);
+    }
 }

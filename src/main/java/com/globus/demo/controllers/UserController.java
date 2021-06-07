@@ -1,6 +1,7 @@
 package com.globus.demo.controllers;
 
 import com.globus.demo.model.entites.User;
+import com.globus.demo.response.Email;
 import com.globus.demo.response.Response;
 import com.globus.demo.service.IUserService;
 import com.globus.demo.response.token.Token;
@@ -60,4 +61,14 @@ public class UserController {
         }
     }
 
+    @PostMapping(value = "/friendinfo")
+    public ResponseEntity<Response> readFriendByEmail(@RequestBody Email email) {
+        final User user = userService.readByEmail(email.getEmail());
+        if (user == null){
+            return new ResponseEntity<>(new Response(false, "User not found"), HttpStatus.NOT_FOUND);
+        }
+        user.setToken(null);
+        user.setPassword(null);
+        return new ResponseEntity<>(new Response(true, user), HttpStatus.OK);
+    }
 }
