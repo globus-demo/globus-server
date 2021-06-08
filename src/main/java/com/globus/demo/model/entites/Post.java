@@ -13,6 +13,9 @@ public class Post {
     @Column(name = "userEmail")
     String userEmail;
 
+    @Column(name = "title")
+    String title;
+
     @Column(name = "userName")
     String userName;
 
@@ -35,6 +38,14 @@ public class Post {
 
     @Column(name = "time")
     String time;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public Long getPointId() {
         return pointId;
