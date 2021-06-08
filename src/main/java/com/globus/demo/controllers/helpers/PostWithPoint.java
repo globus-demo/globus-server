@@ -22,6 +22,16 @@ public class PostWithPoint {
 
     Point point;
 
+    String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getTime() {
         return time;
     }

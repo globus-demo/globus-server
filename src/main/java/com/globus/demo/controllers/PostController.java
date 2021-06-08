@@ -40,6 +40,7 @@ public class PostController {
         post1.setUserName(post.getUserName());
         post1.setUserSurname(post.getUserSurname());
         post1.setTime(post.getTime());
+        post1.setTitle(post.getTitle());
         
         Point pointUser = post.getPoint();
         Long idPost;
@@ -91,6 +92,8 @@ public class PostController {
             post1.setUserName(post.getUserName());
             post1.setUserSurname(post.getUserSurname());
             post1.setTime(post.getTime());
+            post1.setId(post.getId());
+            post1.setTitle(post.getTitle());
             log.info("POST GET ID " + post.getPointId());
             Optional<Point> point = points.stream().filter(p2 -> p2.getId().equals(post.getPointId())).findFirst();
             if (point.isPresent()) {
