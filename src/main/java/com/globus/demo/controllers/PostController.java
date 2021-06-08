@@ -3,10 +3,12 @@ package com.globus.demo.controllers;
 import com.globus.demo.controllers.helpers.PostWithPoint;
 import com.globus.demo.model.entites.Point;
 import com.globus.demo.model.entites.Post;
+import com.globus.demo.model.entites.User;
 import com.globus.demo.response.Email;
 import com.globus.demo.response.Response;
 import com.globus.demo.service.IPointService;
 import com.globus.demo.service.IPostservice;
+import com.globus.demo.service.IResponseToFriendsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class PostController {
 
     @Autowired
     private IPointService pointService;
+
+    @Autowired
+    IResponseToFriendsService responseToFriendsService;
 
     @PostMapping(value = "/addpost")
     public ResponseEntity<?> addPoint(@RequestBody PostWithPoint post) {
@@ -79,8 +84,25 @@ public class PostController {
 
     @PostMapping(value = "/findallpost")
     public ResponseEntity<?> addPoint(@RequestBody Email email) {
-        List<Post> posts = postservice.userPost(email.getEmail());
-        List<Point> points = pointService.getPointByEmail(email.getEmail());
+        List<PostWithPoint> postUser = getPost(email.getEmail());
+        return new ResponseEntity<>(postUser, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/getnews")
+    public ResponseEntity<?> getnews(@RequestBody Email email) {
+        List<User> users = responseToFriendsService.fromUser(email.getEmail());
+        List<PostWithPoint> lenta = new ArrayList<>();
+        for (User user : users) {
+            List<PostWithPoint> postsUser = getPost(user.getEmail());
+            lenta.addAll(postsUser);
+        }
+        lenta.sort((a,b) -> Long.compare(b.getId(), a.getId()));
+        return new ResponseEntity<>(lenta, HttpStatus.OK);
+    }
+
+    private List<PostWithPoint> getPost(String email) {
+        List<Post> posts = postservice.userPost(email);
+        List<Point> points = pointService.getPointByEmail(email);
         for (Point gg: points){
             log.info("Есть говно " + gg.getId());
         }
@@ -105,6 +127,6 @@ public class PostController {
 
             postWithPoints.add(post1);
         }
-        return new ResponseEntity<>(postWithPoints, HttpStatus.OK);
+        return postWithPoints;
     }
 }
